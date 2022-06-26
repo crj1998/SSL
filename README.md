@@ -28,11 +28,11 @@ CIFAR10-100: 94.14
 
 ### Hyper-parameter for CIFAR10
 
-$\tau$=0.95, $\mu$=7, $\lambda_\mu$=1.0, $B$=64, 
+tau=0.95, mu=7, lambda_mu=1.0, B=64, 
 
-optimizer: $lr$=0.03, $\beta$=0.9, weight decay=$5e^{-4}$, Nesterov used.
+optimizer: lr=0.03, beta=0.9, weight decay=5e^{-4}, Nesterov used.
 
-scheduler: cosine learning rate decay, with total steps: $2^{17} = 1024*128$.
+scheduler: cosine learning rate decay, with total steps: 2^{17} = 1024*128.
 
 
 ## Usage
@@ -154,5 +154,6 @@ The Framework use `config.yaml` to prepare `model(include EMA)`, `dataloader`, `
 
 
 
-## Experiment
-idea: proj 91.77
+## Experiment Exploration
+
+More details can be found in [sankuai](https://km.sankuai.com/page/1327603307).
