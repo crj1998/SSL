@@ -38,9 +38,11 @@ scheduler: cosine learning rate decay, with total steps: 2^{17} = 1024*128.
 ## Usage
 ### Install and Setup
 Clone this repo to your machine and install dependencies:  
-We use torch==1.6.0 and torchvision==0.12.0 for CUDA 10.1  
+We use torch==1.8.0 and torchvision==0.9.0 for CUDA 11.0
 
 ```
+conda create -n ssl python=3.8
+conda activate ssl
 pip install -r requirements.txt
 ```
 ### Training
