@@ -123,19 +123,21 @@ data
 
 ```
 # convert pytorch CIFAR10/CIFAR100 format to ImageFolder
+python tools/make_cifar.py --dataset CIFAR10 --src_path path/to --tar_path path/to --labeled_per_class 100
 ```
-
+2. **make config file**
+Modify the config file in `SSL/configs` folder. Like set dataset, backbone, algorithm, hyper-parameters.
 
 3. **start train**
 Now you can run the experiments for different SSL althorithms by modifying configs as you need.  
 
 ```
 ## Single-GPU
-# to train the model by 40 labeled data of CIFAR-10 dataset by FixMatch:
+# train the model by 40 labeled data of CIFAR-10 dataset by FixMatch:
 python main.py --cfg configs/dev.yaml --out path/to --seed 5 --gpu 0
 
 ## Multi-GPU
-# to train the model by CIFAR100 dataset by FixMatch+CCSSL with 4GPUs:
+# train the model by CIFAR100 dataset by FixMatch+CCSSL with 4GPUs:
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --nproc_per_node 4 main.py --cfg configs/dev.yaml --out results/dev --use_BN True --seed 5
 ```
 
