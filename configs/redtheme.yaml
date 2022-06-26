@@ -1,0 +1,105 @@
+
+train:
+  eval_step: 1024
+  total_steps: 131072
+  trainer: 
+    name: TradeMatch
+    threshold: 0.95
+    T: 1.0
+    lambda_u: 1.0
+    beta: 2.0
+    loss_x:
+      name: cross_entropy
+      reduction: mean
+    loss_u:
+      name: cross_entropy
+      reduction: mean
+      
+data:
+  name: RedTheme
+  num_classes: 3
+  mu: 2
+  batch_size: 32
+  num_labeled: 10000
+  root: /home/hadoop-seccv/ssd/rjchen/data/redtheme
+  num_workers: 4
+  labeled:
+    folder: 'train'
+    transforms:
+      - name: Resize
+        size: [224, 224]
+      - name: RandomHorizontalFlip
+      - name: RandomCrop
+        size: 224
+        padding: 28
+        padding_mode: reflect
+      - name: ToTensor
+      - name: Normalize
+        mean: [0.5, 0.5, 0.5]
+        std: [0.5, 0.5, 0.5]
+
+  unlabeled:
+    folder: 'unlabel'
+    transforms: 
+      - 
+        - name: Resize
+          size: [224, 224]
+        - name: RandomHorizontalFlip
+        - name: RandomCrop
+          size: 224
+          padding: 28
+          padding_mode: reflect
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.5, 0.5, 0.5]
+          std: [0.5, 0.5, 0.5]
+      - 
+        - name: Resize
+          size: [224, 224]
+        - name: RandomHorizontalFlip
+        - name: RandomCrop
+          size: 224
+          padding: 28
+          padding_mode: reflect
+        - name: RandAugmentMC
+          n: 2
+          m: 10
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.5, 0.5, 0.5]
+          std: [0.5, 0.5, 0.5]
+  test:
+    folder: 'test'
+    transforms:
+      - name: Resize
+        size: [224, 224]
+      - name: ToTensor
+      - name: Normalize
+        mean: [0.5, 0.5, 0.5]
+        std: [0.5, 0.5, 0.5]
+
+model:
+  name: resnet50
+  pretrained: False
+  num_classes: 3
+
+optimizer:
+  name: SGD
+  lr: 0.03
+  momentum: 0.9
+  weight_decay: 0.0005
+  nesterov: True
+
+scheduler:
+  name: cosine_schedule_with_warmup
+  num_warmup_steps: 0
+  num_training_steps: 131072
+
+amp:
+  use: False
+  opt_level: O1
+
+ema:
+  use: True
+  pseudo_with_ema: False
+  decay: 0.999

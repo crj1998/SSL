@@ -1,0 +1,100 @@
+
+train:
+  eval_step: 1024
+  total_steps: 262144
+  trainer: 
+    name: TradeMatch
+    threshold: 0.95
+    T: 1.0
+    lambda_u: 1.0
+    beta: 2.0
+    loss_x:
+      name: cross_entropy
+      reduction: mean
+    loss_u:
+      name: cross_entropy
+      reduction: mean
+      
+data:
+  name: CIFAR100_2500
+  num_classes: 100
+  mu: 7
+  batch_size: 64
+  num_labeled: 2500
+  root: ../../data/SSLdata/CIFAR100_2500
+  num_workers: 4
+  labeled:
+    folder: 'labeled'
+    transforms:
+      - name: RandomHorizontalFlip
+        p: 0.5
+      - name: RandomCrop
+        size: 32
+        padding: 4
+        padding_mode: reflect
+      - name: ToTensor
+      - name: Normalize
+        mean: [0.5071, 0.4867, 0.4408]
+        std: [0.2675, 0.2565, 0.2761]
+
+  unlabeled:
+    folder: 'unlabeled'
+    transforms: 
+      - 
+        - name: RandomHorizontalFlip
+        - name: RandomCrop
+          size: 32
+          padding: 4
+          padding_mode: reflect
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.5071, 0.4867, 0.4408]
+          std: [0.2675, 0.2565, 0.2761]
+      - 
+        - name: RandomHorizontalFlip
+        - name: RandomCrop
+          size: 32
+          padding: 4
+          padding_mode: reflect
+        - name: RandAugmentMC
+          n: 2
+          m: 10
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.5071, 0.4867, 0.4408]
+          std: [0.2675, 0.2565, 0.2761]
+  test:
+    folder: 'test'
+    transforms:
+      - name: ToTensor
+      - name: Normalize
+        mean: [0.5071, 0.4867, 0.4408]
+        std: [0.2675, 0.2565, 0.2761]
+
+model:
+  name: wideresnet
+  depth: 28
+  widen_factor: 8
+  dropout: 0.0
+  num_classes: 100
+
+optimizer:
+  name: SGD
+  lr: 0.03
+  momentum: 0.9
+  weight_decay: 0.001
+  nesterov: True
+
+scheduler:
+  name: cosine_schedule_with_warmup
+  num_warmup_steps: 0
+  num_training_steps: 262144
+
+amp:
+  use: False
+  opt_level: O1
+
+ema:
+  use: True
+  pseudo_with_ema: False
+  decay: 0.999

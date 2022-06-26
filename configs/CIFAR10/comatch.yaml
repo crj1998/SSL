@@ -1,0 +1,122 @@
+
+train:
+  eval_step: 1024
+  total_steps: 131072
+  trainer:
+    name: CoMatch
+    threshold: 0.95
+    queue_batch: 5
+    contrast_threshold: 0.8
+    da_len: 32
+    T: 0.2
+    alpha: 0.9
+    lambda_u: 1.0
+    lambda_c: 1.0
+    loss_x:
+      name: cross_entropy
+      reduction: mean
+
+model:
+  name: wideresnet
+  depth: 28
+  widen_factor: 2
+  dropout: 0.0
+  num_classes: 10
+  proj: true
+  low_dim: 64
+
+data:
+  name: CIFAR10SSL250
+  num_workers: 4
+  num_labeled: 250
+  num_classes: 10
+  batch_size: 64
+  expand_labels: false
+  mu: 7
+  root: ../../data/SSLdata/CIFAR10_250
+  labeled:
+    folder: 'labeled'
+    transforms:
+      - name: RandomHorizontalFlip
+        p: 0.5
+      - name: RandomCrop
+        size: 32
+        padding: 4
+        padding_mode: reflect
+      - name: ToTensor
+      - name: Normalize
+        mean: [0.4914, 0.4822, 0.4465]
+        std: [0.2471, 0.2435, 0.2616]
+
+  unlabeled:
+    folder: 'unlabeled'
+    transforms: 
+      - 
+        - name: RandomHorizontalFlip
+        - name: RandomCrop
+          size: 32
+          padding: 4
+          padding_mode: reflect
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.4914, 0.4822, 0.4465]
+          std: [0.2471, 0.2435, 0.2616]
+      - 
+        - name: RandomHorizontalFlip
+        - name: RandomCrop
+          size: 32
+          padding: 4
+          padding_mode: reflect
+        - name: RandAugmentMC
+          n: 2
+          m: 10
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.4914, 0.4822, 0.4465]
+          std: [0.2471, 0.2435, 0.2616]
+      - 
+        - name: RandomResizedCrop
+          size: 32
+          scale: [0.2, 1.0]
+        - name: RandomHorizontalFlip
+        - name: RandomCrop
+          size: 32
+          padding: 4
+          padding_mode: reflect
+        - name: RandomApply
+          transforms: [{'name': 'ColorJitter', 'brightness': 0.4, 'contrast': 0.4, 'saturation': 0.4, 'hue': 0.1}]
+          p: 0.8
+        - name: RandomGrayscale
+          p: 0.2
+        - name: ToTensor
+        - name: Normalize
+          mean: [0.4914, 0.4822, 0.4465]
+          std: [0.2471, 0.2435, 0.2616]
+  test:
+    folder: 'test'
+    transforms:
+      - name: ToTensor
+      - name: Normalize
+        mean: [0.4914, 0.4822, 0.4465]
+        std: [0.2471, 0.2435, 0.2616]
+
+optimizer:
+  name: SGD
+  lr: 0.03
+  momentum: 0.9
+  weight_decay: 0.001
+  nesterov: True
+
+scheduler:
+  name: cosine_schedule_with_warmup
+  num_warmup_steps: 0
+  num_training_steps: 131072
+
+amp:
+  use: False
+  opt_level: O1
+
+ema:
+  use: True
+  pseudo_with_ema: False
+  decay: 0.999
