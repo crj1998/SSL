@@ -155,9 +155,3 @@ The Framework use `config.yaml` to prepare `model(include EMA)`, `dataloader`, `
 2. Comatch: Semi-supervised learning with contrastive graph regularization. ICCV 2021.
 3. SimMatch: Semi-supervised Learning with Similarity Matching. CVPR 2022.
 4. Class-Aware Contrastive Semi-Supervised Learning. CVPR 2022.
-
-
-
-## Experiment Exploration
-
-More details can be found in [sankuai](https://km.sankuai.com/page/1327603307).
